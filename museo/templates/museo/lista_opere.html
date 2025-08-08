@@ -1,0 +1,130 @@
+{% extends 'museo/base.html' %}
+
+{% block title %}Ricerca Opere - {{ block.super }}{% endblock %}
+
+{% block content %}
+<aside class="filtri-ricerca">
+    <h3>Filtro Opere</h3>
+    <form action="{% url 'museo:lista_opere' %}" method="GET">
+        <div class="form-group"><label for="titolo">Titolo:</label><input type="text" id="titolo" name="titolo" value="{{ search_titolo|default:'' }}"></div>
+        <div class="form-group"><label for="anno">Anno Realizzazione:</label><input type="number" id="anno" name="anno" value="{{ search_anno|default:'' }}"></div>
+        <div class="form-group"><label for="autore_nome">Nome Autore:</label><input type="text" id="autore_nome" name="autore_nome" value="{{ search_autore_nome|default:'' }}"></div>
+        <div class="form-group"><label for="autore_cognome">Cognome Autore:</label><input type="text" id="autore_cognome" name="autore_cognome" value="{{ search_autore_cognome|default:'' }}"></div>
+        <div class="form-group">
+            <label for="tipo">Tipo Opera:</label>
+            <select id="tipo" name="tipo">
+                <option value="">Tutti i tipi</option>
+                <option value="Quadro" {% if search_tipo == 'Quadro' %}selected{% endif %}>Quadro</option>
+                <option value="Scultura" {% if search_tipo == 'Scultura' %}selected{% endif %}>Scultura</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sala">Sala Espositiva:</label>
+            <select id="sala" name="sala">
+                <option value="">Tutte le collocazioni</option>
+                <option value="magazzino" {% if search_sala == 'magazzino' %}selected{% endif %}>In magazzino</option>
+                {% for sala in sale_per_filtro %}
+                    <option value="{{ sala.numero }}" {% if search_sala == sala.numero|stringformat:"s" %}selected{% endif %}>{{ sala.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Cerca</button>
+    </form>
+</aside>
+
+<main class="contenuto-principale">
+    <div class="main-header">
+        <h2>Elenco Opere ({{ page_obj.paginator.count }} trovate)</h2>
+        <a href="{% url 'museo:opera_nuova' %}" class="btn btn-primary">Aggiungi Nuova Opera</a>
+    </div>
+
+    {% if page_obj %}
+        <table>
+            <thead>
+                <tr>
+                    {# Manteniamo i filtri nei link di ordinamento #}
+                    {% with "titolo="|add:search_titolo|add:"&anno="|add:search_anno|add:"&autore_nome="|add:search_autore_nome|add:"&autore_cognome="|add:search_autore_cognome|add:"&tipo="|add:search_tipo|add:"&sala="|add:search_sala as params_ricerca %}
+                    <th><a href="?ordina_per=titolo&direzione={% if ordina_per == 'titolo' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'titolo' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Titolo</a></th>
+                    <th><a href="?ordina_per=cognome_autore&direzione={% if ordina_per == 'cognome_autore' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'cognome_autore' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Autore</a></th>
+                    <th><a href="?ordina_per=annoRealizzazione&direzione={% if ordina_per == 'annoRealizzazione' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'annoRealizzazione' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Anno</a></th>
+                    <th><a href="?ordina_per=tipo&direzione={% if ordina_per == 'tipo' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'tipo' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Tipo</a></th>
+                    <th><a href="?ordina_per=nome_sala&direzione={% if ordina_per == 'nome_sala' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'nome_sala' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Sala Espositiva</a></th>
+                    <th>Azioni</th>
+                    {% endwith %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for opera in page_obj %}
+                    <tr>
+                        <td>{{ opera.titolo }}</td>
+                        <td>{{ opera.autore.nome }} {{ opera.autore.cognome }}</td>
+                        <td>{{ opera.annoRealizzazione }}</td>
+                        <td>{{ opera.get_tipo_display }}</td>
+                        <td>{{ opera.espostaInSala.nome|default:"In magazzino" }}</td>
+                        <td>
+                            <a href="{% url 'museo:opera_modifica' opera.codice %}" class="btn-link">Modifica</a>
+                            
+                            {# MODIFICA QUI: Trasformiamo il link in un pulsante per il JS #}
+                            <button type="button" class="btn-link delete btn-delete-confirm" 
+                                    data-url="{% url 'museo:opera_elimina' opera.codice %}" 
+                                    data-titolo="{{ opera.titolo }}">
+                                Elimina
+                            </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">Nessuna opera trovata con i criteri specificati.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="paginazione">
+                <ul>
+                    {# Link per la pagina precedente #}
+                    {% if page_obj.has_previous %}
+                        <li><a href="?pagina={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">&laquo; Prec</a></li>
+                    {% endif %}
+
+                    {# Logica per i numeri di pagina con ellissi #}
+                    {% for i in page_obj.paginator.page_range %}
+                        
+                        {# Mostra sempre la prima pagina, l'ultima, e quelle vicine alla pagina corrente #}
+                        {% if i == 1 or i == page_obj.paginator.num_pages or i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                            
+                            {# Se è la pagina corrente, la mostra come attiva #}
+                            {% if page_obj.number == i %}
+                                <li><a href="#" class="active">{{ i }}</a></li>
+                            {# Altrimenti, mostra un link normale #}
+                            {% else %}
+                                <li><a href="?pagina={{ i }}&{{ request.GET.urlencode|cut:'pagina' }}">{{ i }}</a></li>
+                            {% endif %}
+
+                        {# Mostra i puntini di sospensione una sola volta quando c'è un buco #}
+                        {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %}
+                            <li><span class="ellipsis">...</span></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {# Link per la pagina successiva #}
+                    {% if page_obj.has_next %}
+                         <li><a href="?pagina={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">Succ &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'museo:lista_opere' %}">Ricerca Opere</a></li>
+        <li><a href="{% url 'museo:lista_autori' %}">Ricerca Autori</a></li>
+        <li><a href="{% url 'museo:lista_sale' %}">Ricerca Sale</a></li>
+        <li><a href="{% url 'museo:lista_temi' %}">Ricerca Temi</a></li>
+    </ul>
+</nav>
+{% endblock %}

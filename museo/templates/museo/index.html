@@ -1,0 +1,27 @@
+{% extends 'museo/base.html' %}
+{% load static %}
+
+{% block content %}
+<aside class="filtri-ricerca">
+    <h3>Filtri Ricerca</h3>
+</aside>
+
+<main class="contenuto-principale home-content">
+    <h2>Benvenuto nel nostro Museo Virtuale!</h2>
+    <p>
+        Puoi usare la navigazione a destra per spostarti tra le sezioni del sito, dove potrai effettuare ricerche con i filtri nella colonna a sinistra.
+    </p>
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        {# I link seguenti sono segnaposto, li attiveremo man mano #}
+        <li><a href="{% url 'museo:lista_opere' %}">Ricerca Opere</a></li>
+        <li><a href="{% url 'museo:lista_autori' %}">Ricerca Autori</a></li>
+        <li><a href="{% url 'museo:lista_sale' %}">Ricerca Sale</a></li>
+        <li><a href="{% url 'museo:lista_temi' %}">Ricerca Temi</a></li>
+    </ul>
+</nav>
+{% endblock %}

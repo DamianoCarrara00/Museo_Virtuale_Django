@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Museo Virtuale{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'museo/css/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Museo Virtuale</h1>
+    </header>
+
+    <div class="main-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>Damiano Carrara (matr.1067871) - Progetto di Programmazione Web - © 2025</p>
+    </footer>
+
+    <div id="modal-conferma-elimina" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Conferma Eliminazione</h3>
+            <p id="conferma-testo"></p>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="modal-actions">
+                    <button type="button" id="btn-annulla-elimina" class="btn btn-secondary">Annulla</button>
+                    <button type="submit" class="btn btn-danger">Sì, elimina</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="message-overlay" class="modal-overlay hidden">
+        <div id="message-box" class="modal-content">
+            <p id="message-text"></p> {# Verrà riempito da JS #}
+            <button id="message-close-btn" class="btn btn-primary">Chiudi</button>
+        </div>
+    </div>
+
+    {# Script che si attiva SOLO se ci sono messaggi da Django #}
+    {% if messages %}
+        {% for message in messages %}
+            {% if forloop.first %}
+                <div id="django-message-data" data-message="{{ message }}" style="display: none;"></div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <script src="{% static 'museo/js/script.js' %}"></script>
+</body>
+</html>

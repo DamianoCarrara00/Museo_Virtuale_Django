@@ -1,0 +1,146 @@
+{% extends 'museo/base.html' %}
+{% load static %}
+
+{% block title %}Ricerca Sale - {{ block.super }}{% endblock %}
+
+{% block content %}
+<aside class="filtri-ricerca">
+    <h3>Filtro Sale</h3>
+    <form action="{% url 'museo:lista_sale' %}" method="GET">
+        <div class="form-group">
+            <label for="numero">Numero Sala:</label>
+            <input type="number" id="numero" name="numero" value="{{ search_numero|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="nome">Nome Sala:</label>
+            <input type="text" id="nome" name="nome" value="{{ search_nome|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="tema">Tema:</label>
+            <select id="tema" name="tema">
+                <option value="">Tutti i temi</option>
+                <option value="senza_tema" {% if search_tema == 'senza_tema' %}selected{% endif %}>Nessun tema</option>
+                {% for tema in temi_per_filtro %}
+                    <option value="{{ tema.codice }}" {% if search_tema == tema.codice|stringformat:"s" %}selected{% endif %}>
+                        {{ tema.descrizione }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Cerca</button>
+    </form>
+</aside>
+
+<main class="contenuto-principale">
+    <div class="main-header">
+        <h2>Elenco Sale ({{ page_obj.paginator.count }} trovate)</h2>
+    </div>
+
+    {% if page_obj %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {# CORREZIONE: Costruiamo i link manualmente per evitare duplicati #}
+                        <th>
+                            <a href="?ordina_per=numero&direzione={% if ordina_per == 'numero' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
+                               class="sortable {% if ordina_per == 'numero' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Numero
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?ordina_per=nome&direzione={% if ordina_per == 'nome' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
+                               class="sortable {% if ordina_per == 'nome' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Nome
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?ordina_per=superficie&direzione={% if ordina_per == 'superficie' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
+                               class="sortable {% if ordina_per == 'superficie' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Superficie (mq)
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?ordina_per=tema_descrizione&direzione={% if ordina_per == 'tema_descrizione' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
+                               class="sortable {% if ordina_per == 'tema_descrizione' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Tema
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?ordina_per=numero_opere&direzione={% if ordina_per == 'numero_opere' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
+                               class="sortable {% if ordina_per == 'numero_opere' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Opere Esposte
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sala in page_obj %}
+                        <tr>
+                            <td>{{ sala.numero }}</td>
+                            <td>{{ sala.nome }}</td>
+                            <td>{{ sala.superficie }}</td>
+                            <td>{{ sala.tema.descrizione|default:"N/A" }}</td>
+                            <td>{{ sala.numero_opere }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">Nessuna sala trovata con i criteri specificati.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="paginazione">
+                <ul>
+                    {# Link per la pagina precedente #}
+                    {% if page_obj.has_previous %}
+                        <li><a href="?pagina={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">&laquo; Prec</a></li>
+                    {% endif %}
+
+                    {# Logica per i numeri di pagina con ellissi #}
+                    {% for i in page_obj.paginator.page_range %}
+                        
+                        {# Mostra sempre la prima pagina, l'ultima, e quelle vicine alla pagina corrente #}
+                        {% if i == 1 or i == page_obj.paginator.num_pages or i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                            
+                            {# Se è la pagina corrente, la mostra come attiva #}
+                            {% if page_obj.number == i %}
+                                <li><a href="#" class="active">{{ i }}</a></li>
+                            {# Altrimenti, mostra un link normale #}
+                            {% else %}
+                                <li><a href="?pagina={{ i }}&{{ request.GET.urlencode|cut:'pagina' }}">{{ i }}</a></li>
+                            {% endif %}
+
+                        {# Mostra i puntini di sospensione una sola volta quando c'è un buco #}
+                        {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %}
+                            <li><span class="ellipsis">...</span></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {# Link per la pagina successiva #}
+                    {% if page_obj.has_next %}
+                         <li><a href="?pagina={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">Succ &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'museo:lista_opere' %}">Ricerca Opere</a></li>
+        <li><a href="{% url 'museo:lista_autori' %}">Ricerca Autori</a></li>
+        <li><a href="{% url 'museo:lista_sale' %}">Ricerca Sale</a></li>
+        <li><a href="{% url 'museo:lista_temi' %}">Ricerca Temi</a></li>
+    </ul>
+</nav>
+{% endblock %}

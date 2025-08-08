@@ -1,0 +1,198 @@
+/* --- Impostazioni Generali --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f1ea;
+    color: #4b3832;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- Header --- */
+header {
+    background-color: #854442;
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+    box-sizing: border-box; /* Previene overflow orizzontale */
+}
+header h1 { margin: 0; font-size: 2em; }
+
+.main-container {
+    display: flex;
+    flex: 1; 
+}
+
+/* --- Footer --- */
+footer {
+    background-color: #3c2f2f;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box; /* Previene overflow orizzontale */
+}
+
+/* --- Colonne Laterali --- */
+.filtri-ricerca, .nav-laterale {
+    flex-basis: 250px; /* Larghezza di base */
+    flex-shrink: 0;   /* Impedisce alle colonne di restringersi */
+    padding: 20px;
+    background-color: #e2d8d2;
+}
+.nav-laterale {
+    flex-basis: 200px;
+    border-left: 2px solid #d4c4b8;
+}
+.filtri-ricerca {
+    border-right: 2px solid #d4c4b8;
+}
+
+/* --- Colonna Centrale --- */
+.contenuto-principale {
+    flex: 3;
+    padding: 20px;
+}
+
+/* --- Layout Speciali di Pagina --- */
+.home-content { text-align: center; }
+.main-container.layout-form .contenuto-principale { flex-grow: 2; /* Dà più spazio al form */ }
+
+/* --- Stili Generali --- */
+.hidden { display: none !important; }
+.main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+/* --- Stili Tabelle --- */
+.contenuto-principale table { width: 100%; border-collapse: collapse; }
+.contenuto-principale th, .contenuto-principale td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #d4c4b8; }
+.contenuto-principale thead th {
+    background-color: #6a3937;
+    color: #fff;
+    font-weight: bold;
+}
+.contenuto-principale tbody tr:nth-child(even) { background-color: #e9e2d9; }
+.contenuto-principale tbody tr:hover { background-color: #d4c4b8; cursor: pointer; }
+
+/* --- Stili Form --- */
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+.filtri-ricerca .form-group { margin-bottom: 15px; }
+.filtri-ricerca .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.filtri-ricerca .form-group input[type="text"],
+.filtri-ricerca .form-group input[type="number"],
+.filtri-ricerca .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+.required-star { color: #c0392b; font-weight: bold; margin-left: 2px; }
+.required-legend { font-size: 0.9em; color: #666; margin-top: 0; margin-bottom: 15px; text-align: right; }
+.error-message { color: #a94442; font-size: 0.9em; margin-top: 5px; }
+.error-message-box { background-color: #f2dede; color: #a94442; border: 1px solid #ebccd1; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+
+/* --- Stili Pulsanti --- */
+.btn { display: inline-block; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; border: none; }
+.btn-primary { background-color: #854442; }
+.btn-secondary { background-color: #a98b83; padding: 5px 10px; font-size: 0.9em; }
+.btn-secondary:hover { background-color: #856a63; }
+.btn-danger { background-color: #c0392b; }
+.btn-danger:hover { background-color: #962d22; }
+#btn-nuovo-autore { display: block; margin-top: 10px; }
+.btn-link { background: none; border: none; color: #6a3937; text-decoration: underline; cursor: pointer; padding: 2px 5px; font-size: 0.9em; margin: 0 5px; }
+.btn-link:hover { color: #3c2f2f; }
+.btn-link.delete { color: #c0392b; }
+.btn-link.delete:hover { color: #962d22; }
+
+/* --- Stili Navigazione --- */
+.nav-laterale h3 { margin-top: 0; color: #4b3832; }
+.nav-laterale ul { list-style: none; padding: 0; }
+.nav-laterale ul li { margin-bottom: 10px; }
+.nav-laterale a { display: block; text-decoration: none; color: #6a3937; font-weight: bold; padding: 8px; border-radius: 4px; }
+.nav-laterale a:hover { background-color: #d4c4b8; }
+
+.paginazione { margin-top: 30px; text-align: center; }
+.paginazione ul { list-style: none; padding: 0; margin: 0; display: inline-block; }
+.paginazione li { display: inline; margin: 0 2px; }
+.paginazione a { color: #854442; padding: 8px 12px; text-decoration: none; border: 1px solid #d4c4b8; border-radius: 4px; transition: background-color 0.3s; }
+.paginazione a:hover { background-color: #e9e2d9; }
+.paginazione a.active { background-color: #854442; color: white; border-color: #854442; font-weight: bold; }
+
+/* --- Stili Finestre Modali --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px; }
+.modal-actions { text-align: right; margin-top: 20px; }
+#conferma-testo { margin: 20px 0; line-height: 1.5; }
+
+/* --- Media Query --- */
+@media (max-width: 992px) {
+    .main-container { flex-direction: column; min-height: auto; /* Rimuovi min-height su mobile */ }
+    .filtri-ricerca, .nav-laterale { max-width: 100%; border: none; border-bottom: 2px solid #d4c4b8; }
+}
+
+.paginazione .ellipsis {
+    color: #854442;
+    padding: 8px 12px;
+}
+
+/* --- Stili per l'Ordinamento delle Tabelle --- */
+/* Rende il link un contenitore flessibile e cliccabile in tutta la cella */
+th a {
+    display: flex;
+    align-items: center; /* Allinea verticalmente testo e freccia */
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Allinea il contenuto (testo + freccia) a sinistra */
+}
+
+/* Stile comune per le frecce dopo il testo */
+th a.sort-asc::after,
+th a.sort-desc::after {
+    display: inline-block;
+    margin-left: 0.5em; /* Aggiunge lo spazio tra il testo e la freccia */
+}
+
+/* Freccia SU (bianca e visibile) */
+th a.sort-asc::after {
+    content: '↑';
+}
+
+/* Freccia GIÙ (bianca e visibile) */
+th a.sort-desc::after {
+    content: '↓';
+}
+
+#message-overlay #message-box.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f1ea;
+    color: #4b3832;
+    border: 1px solid #4b3832;
+    padding: 30px;
+    max-width: 400px;
+    border-radius: 8px;
+}
+
+#message-overlay #message-text {
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+#message-overlay #message-close-btn {
+    background-color: #854442;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#message-overlay #message-close-btn:hover {
+    background-color: #6a3937;
+}

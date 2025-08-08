@@ -1,0 +1,132 @@
+{% extends 'museo/base.html' %}
+
+{% block title %}{{ page_title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<aside class="filtri-ricerca"> {# <-- Corretto class. in class #}
+    <h3>{{ page_title }}</h3>
+    <p>Compila i campi per salvare le modifiche.</p>
+</aside>
+
+<main class="contenuto-principale">
+    <h2>Dettagli Opera</h2>
+
+    {% if form.non_field_errors or form.errors %}
+    <div class="error-message-box">
+        <strong>Errore di validazione:</strong><br>
+        {{ form.non_field_errors }}
+        <ul>
+            {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.titolo.id_for_label }}">
+                {{ form.titolo.label }}
+                {% if form.titolo.field.required %}<span class="required-star">*</span>{% endif %}
+            </label>
+            {{ form.titolo }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.annoRealizzazione.id_for_label }}">{{ form.annoRealizzazione.label }}</label>
+            {{ form.annoRealizzazione }}
+            <div class="error-message" id="errore-anno-autore"></div>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.annoAcquisto.id_for_label }}">{{ form.annoAcquisto.label }}</label>
+            {{ form.annoAcquisto }}
+            <div class="error-message" id="errore-anno-acquisto"></div>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.tipo.id_for_label }}">
+                {{ form.tipo.label }}
+                {% if form.tipo.field.required %}<span class="required-star">*</span>{% endif %}
+            </label>
+            {{ form.tipo }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.autore.id_for_label }}">
+                {{ form.autore.label }}
+                {% if form.autore.field.required %}<span class="required-star">*</span>{% endif %}
+            </label>
+            <select name="{{ form.autore.name }}" id="{{ form.autore.id_for_label }}" required>
+                <option value="">Seleziona un autore</option>
+                {% for value, text in form.autore.field.choices %}
+                {% if value.instance %}
+                <option value="{{ value.instance.codice }}" data-nascita="{{ value.instance.dataNascita|date:'Y-m-d'|default:'' }}" data-morte="{{ value.instance.dataMorte|date:'Y-m-d'|default:'' }}" {% if form.autore.value|stringformat:"s" == value.instance.codice|stringformat:"s" %}selected{% endif %}>
+                    {{ text }}
+                </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <button type="button" id="btn-nuovo-autore" class="btn btn-secondary">Nuovo Autore</button>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.espostaInSala.id_for_label }}">{{ form.espostaInSala.label }}</label>
+            {{ form.espostaInSala }}
+        </div>
+
+        <p class="required-legend">* Campo obbligatorio</p>
+        <button type="submit" class="btn btn-primary">Salva Opera</button>
+    </form>
+    <div id="modal-autore" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Aggiungi Nuovo Autore</h3>
+            <form id="form-nuovo-autore" data-url="{% url 'museo:nuovo_autore_ajax' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nuovo_nome">Nome: <span class="required-star">*</span></label>
+                    <input type="text" id="nuovo_nome" name="nome" required>
+                    <div class="error-message" id="errore-nome-autore"></div>
+                </div>
+                <div class="form-group">
+                    <label for="nuovo_cognome">Cognome: <span class="required-star">*</span></label>
+                    <input type="text" id="nuovo_cognome" name="cognome" required>
+                    <div class="error-message" id="errore-cognome-autore"></div>
+                </div>
+                <div class="form-group">
+                    <label for="nuova_nazionalita">Nazione:</label>
+                    <input type="text" id="nuova_nazionalita" name="nazionalita">
+                </div>
+                <div class="form-group">
+                    <label for="nuova_dataNascita">Data di Nascita:</label>
+                    <input type="date" id="nuova_dataNascita" name="dataNascita">
+                    <div class="error-message" id="errore-data-nascita"></div>
+                </div>
+                <div class="form-group">
+                    <label for="nuovo_stato">Stato: <span class="required-star">*</span></label>
+                    <select id="nuovo_stato" name="stato" required>
+                        <option value="vivo">Vivo</option>
+                        <option value="morto">Morto</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="campo-data-morte">
+                    <label for="nuova_dataMorte">Data di Morte:</label>
+                    <input type="date" id="nuova_dataMorte" name="dataMorte">
+                    <div class="error-message" id="errore-data-morte"></div>
+                </div>
+                <p class="required-legend" style="text-align: left;">* Campo obbligatorio</p>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Salva Autore</button>
+                    <button type="button" id="btn-chiudi-modal" class="btn-secondary">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'museo:lista_opere' %}">Torna all'elenco</a></li>
+    </ul>
+</nav>
+{% endblock %}

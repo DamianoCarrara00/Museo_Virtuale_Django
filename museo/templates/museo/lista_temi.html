@@ -1,0 +1,110 @@
+{% extends 'museo/base.html' %}
+{% load static %}
+
+{% block title %}Ricerca Temi - {{ block.super }}{% endblock %}
+
+{% block content %}
+<aside class="filtri-ricerca">
+    <h3>Filtro Temi</h3>
+    <form action="{% url 'museo:lista_temi' %}" method="GET">
+        <div class="form-group">
+            <label for="descrizione">Descrizione:</label>
+            <input type="text" id="descrizione" name="descrizione" value="{{ search_descrizione }}">
+        </div>
+        <button type="submit">Cerca</button>
+    </form>
+</aside>
+
+<main class="contenuto-principale">
+    <div class="main-header">
+        <h2>Elenco Temi ({{ page_obj.paginator.count }} trovati)</h2>
+    </div>
+
+    {% if page_obj %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% comment %}
+                        Aggiungiamo una classe 'sortable'. Poi, se questa colonna è quella
+                        attualmente ordinata, aggiungiamo anche 'sort-asc' o 'sort-desc'.
+                        {% endcomment %}
+                        <th>
+                            <a href="?ordina_per=descrizione&direzione={% if ordina_per == 'descrizione' and direzione == 'asc' %}desc{% else %}asc{% endif %}&descrizione={{ search_descrizione }}"
+                            class="sortable {% if ordina_per == 'descrizione' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Descrizione
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?ordina_per=numero_sale&direzione={% if ordina_per == 'numero_sale' and direzione == 'asc' %}desc{% else %}asc{% endif %}&descrizione={{ search_descrizione }}"
+                            class="sortable {% if ordina_per == 'numero_sale' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">
+                                Sale Associate
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tema in page_obj %}
+                        <tr>
+                            <td>{{ tema.descrizione }}</td>
+                            <td>{{ tema.numero_sale }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Paginazione #}
+        {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="paginazione">
+                <ul>
+                    {# Link per la pagina precedente #}
+                    {% if page_obj.has_previous %}
+                        <li><a href="?pagina={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">&laquo; Prec</a></li>
+                    {% endif %}
+
+                    {# Logica per i numeri di pagina con ellissi #}
+                    {% for i in page_obj.paginator.page_range %}
+                        
+                        {# Mostra sempre la prima pagina, l'ultima, e quelle vicine alla pagina corrente #}
+                        {% if i == 1 or i == page_obj.paginator.num_pages or i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                            
+                            {# Se è la pagina corrente, la mostra come attiva #}
+                            {% if page_obj.number == i %}
+                                <li><a href="#" class="active">{{ i }}</a></li>
+                            {# Altrimenti, mostra un link normale #}
+                            {% else %}
+                                <li><a href="?pagina={{ i }}&{{ request.GET.urlencode|cut:'pagina' }}">{{ i }}</a></li>
+                            {% endif %}
+
+                        {# Mostra i puntini di sospensione una sola volta quando c'è un buco #}
+                        {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %}
+                            <li><span class="ellipsis">...</span></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {# Link per la pagina successiva #}
+                    {% if page_obj.has_next %}
+                         <li><a href="?pagina={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">Succ &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    {% else %}
+        <p>Nessun tema trovato con i criteri specificati.</p>
+    {% endif %}
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'museo:lista_opere' %}">Ricerca Opere</a></li>
+        <li><a href="{% url 'museo:lista_autori' %}">Ricerca Autori</a></li>
+        <li><a href="{% url 'museo:lista_sale' %}">Ricerca Sale</a></li>
+        <li><a href="{% url 'museo:lista_temi' %}">Ricerca Temi</a></li>
+    </ul>
+</nav>
+{% endblock %}

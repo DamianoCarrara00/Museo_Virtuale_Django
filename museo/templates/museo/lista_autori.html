@@ -1,0 +1,125 @@
+{% extends 'museo/base.html' %}
+{% load static %}
+
+{% block title %}Ricerca Autori - {{ block.super }}{% endblock %}
+
+{% block content %}
+<aside class="filtri-ricerca">
+    <h3>Filtro Autori</h3>
+    <form action="{% url 'museo:lista_autori' %}" method="GET">
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="{{ search_nome|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="cognome">Cognome:</label>
+            <input type="text" id="cognome" name="cognome" value="{{ search_cognome|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="nazione">Nazione:</label>
+            <input type="text" id="nazione" name="nazionalita" value="{{ search_nazione|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="stato">Stato:</label>
+            <select id="stato" name="stato">
+                <option value="">Tutti</option>
+                <option value="vivo" {% if search_stato == 'vivo' %}selected{% endif %}>Vivo</option>
+                <option value="morto" {% if search_stato == 'morto' %}selected{% endif %}>Morto</option>
+            </select>
+        </div>
+        <button type="submit">Cerca</button>
+    </form>
+</aside>
+
+<main class="contenuto-principale">
+    <div class="main-header">
+        <h2>Elenco Autori ({{ page_obj.paginator.count }} trovati)</h2>
+    </div>
+
+    {% if page_obj %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% with "nome="|add:search_nome|add:"&cognome="|add:search_cognome|add:"&nazionalita="|add:search_nazione|add:"&stato="|add:search_stato as params_ricerca %}
+                        <th><a href="?ordina_per=cognome&direzione={% if ordina_per == 'cognome' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'cognome' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Cognome</a></th>
+                        <th><a href="?ordina_per=nome&direzione={% if ordina_per == 'nome' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'nome' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Nome</a></th>
+                        <th><a href="?ordina_per=nazionalita&direzione={% if ordina_per == 'nazionalita' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'nazionalita' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Nazione</a></th>
+                        <th><a href="?ordina_per=dataNascita&direzione={% if ordina_per == 'dataNascita' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'dataNascita' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Data Nascita</a></th>
+                        <th><a href="?ordina_per=stato&direzione={% if ordina_per == 'stato' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'stato' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Stato</a></th>
+                        <th><a href="?ordina_per=dataMorte&direzione={% if ordina_per == 'dataMorte' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'dataMorte' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Data Morte</a></th>
+                        <th><a href="?ordina_per=numero_opere&direzione={% if ordina_per == 'numero_opere' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'numero_opere' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Numero Opere</a></th>
+                        {% endwith %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for autore in page_obj %}
+                        <tr>
+                            <td>{{ autore.cognome }}</td>
+                            <td>{{ autore.nome }}</td>
+                            <td>{{ autore.nazionalita }}</td>
+                            <td>{{ autore.dataNascita|date:"d/m/Y"|default:"N/A" }}</td>
+                            <td>{{ autore.get_stato_display }}</td>
+                            <td>{{ autore.dataMorte|date:"d/m/Y"|default:"N/A" }}</td>
+                            <td>{{ autore.numero_opere }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">Nessun autore trovato con i criteri specificati.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="paginazione">
+                <ul>
+                    {# Link per la pagina precedente #}
+                    {% if page_obj.has_previous %}
+                        <li><a href="?pagina={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">&laquo; Prec</a></li>
+                    {% endif %}
+
+                    {# Logica per i numeri di pagina con ellissi #}
+                    {% for i in page_obj.paginator.page_range %}
+                        
+                        {# Mostra sempre la prima pagina, l'ultima, e quelle vicine alla pagina corrente #}
+                        {% if i == 1 or i == page_obj.paginator.num_pages or i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                            
+                            {# Se è la pagina corrente, la mostra come attiva #}
+                            {% if page_obj.number == i %}
+                                <li><a href="#" class="active">{{ i }}</a></li>
+                            {# Altrimenti, mostra un link normale #}
+                            {% else %}
+                                <li><a href="?pagina={{ i }}&{{ request.GET.urlencode|cut:'pagina' }}">{{ i }}</a></li>
+                            {% endif %}
+
+                        {# Mostra i puntini di sospensione una sola volta quando c'è un buco #}
+                        {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %}
+                            <li><span class="ellipsis">...</span></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {# Link per la pagina successiva #}
+                    {% if page_obj.has_next %}
+                         <li><a href="?pagina={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'pagina' }}">Succ &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    {% endif %}
+</main>
+
+<nav class="nav-laterale">
+    <h3>Menu</h3>
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'museo:lista_opere' %}">Ricerca Opere</a></li>
+        <li><a href="{% url 'museo:lista_autori' %}">Ricerca Autori</a></li>
+        <li><a href="{% url 'museo:lista_sale' %}">Ricerca Sale</a></li>
+        <li><a href="{% url 'museo:lista_temi' %}">Ricerca Temi</a></li>
+    </ul>
+</nav>
+{% endblock %}

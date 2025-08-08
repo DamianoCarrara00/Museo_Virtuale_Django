@@ -1,0 +1,12 @@
+# File di configurazione con dati sensibili (password!)
+.env
+
+# La cartella dell'ambiente virtuale di Python
+venv/
+
+# File di cache di Python
+__pycache__/
+*.pyc
+
+# File di configurazione specifici dell'editor (es. VS Code)
+.vscode/

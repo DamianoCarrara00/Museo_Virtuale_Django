@@ -1,0 +1,17 @@
+{% extends 'museo/base.html' %}
+
+{% block title %}Conferma Eliminazione - {{ block.super }}{% endblock %}
+
+{% block content %}
+<main class="contenuto-principale">
+    <h2>Conferma Eliminazione</h2>
+    <p>Sei sicuro di voler eliminare l'opera "<strong>{{ opera.titolo }}</strong>"?</p>
+    <p>Questa azione è irreversibile.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sì, elimina</button>
+        <a href="{% url 'museo:lista_opere' %}" class="btn btn-secondary">Annulla</a>
+    </form>
+</main>
+{% endblock %}

@@ -1,0 +1,41 @@
+"numero";"nome";"superficie";"codTema"
+"1";"Atrio delle Meraviglie";"100.34";"8"
+"2";"Ala dei Gigli";"177.80";NULL
+"3";"Sala dei Capolavori";"128.88";"4"
+"4";"Salone Moderna";"164.21";"6"
+"5";"Sala del Silenzio";"162.33";"4"
+"6";"Sala Moderna";"83.79";"3"
+"7";"Atrio dei Gigli";"265.43";"10"
+"8";"Atrio del Silenzio";"158.50";"6"
+"9";"Atrio della Luce";"275.78";"10"
+"10";"Salone dei Capolavori";"246.75";NULL
+"11";"Spazio del Silenzio";"124.70";NULL
+"12";"Atrio dei Capolavori";"223.54";NULL
+"13";"Salone delle Meraviglie";"116.14";NULL
+"14";"Ala Moderna";"245.49";NULL
+"15";"Ala del Silenzio";"234.81";NULL
+"16";"Ala dei Capolavori";"103.20";NULL
+"17";"Corridoio Reale";"51.70";"10"
+"18";"Salone Antica";"236.90";"6"
+"19";"Spazio della Luce";"121.30";"1"
+"20";"Ala delle Meraviglie";"286.50";NULL
+"21";"Atrio Reale";"103.88";NULL
+"22";"Corridoio dei Capolavori";"64.35";"3"
+"23";"Atrio Antica";"247.62";"9"
+"24";"Galleria del Silenzio";"199.22";"2"
+"25";"Corridoio Moderna";"275.29";"6"
+"26";"Ala della Luce";"107.27";"5"
+"27";"Corridoio della Luce";"92.15";"7"
+"28";"Galleria Antica";"281.31";NULL
+"29";"Ala Antica";"125.60";NULL
+"30";"Sala Antica";"228.24";"7"
+"31";"Salone dei Gigli";"231.80";NULL
+"32";"Spazio Antica";"84.73";NULL
+"33";"Salone Reale";"171.54";"8"
+"34";"Galleria Reale";"223.50";"5"
+"35";"Galleria della Luce";"273.80";NULL
+"36";"Sala delle Meraviglie";"163.54";NULL
+"37";"Spazio dei Gigli";"224.38";NULL
+"38";"Spazio delle Meraviglie";"244.36";"10"
+"39";"Spazio dei Capolavori";"152.55";NULL
+"40";"Sala della Luce";"247.94";NULL

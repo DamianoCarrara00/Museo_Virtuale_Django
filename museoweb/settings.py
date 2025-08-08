@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'museo',
 ]
 
 MIDDLEWARE = [
@@ -75,11 +77,11 @@ WSGI_APPLICATION = 'museoweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'museo_db',      # Scegli un nome per il tuo database
-        'USER': 'postgres',       # L'utente di default di Postgres
-        'PASSWORD': 'postgrespw', # La password che hai scelto
-        'HOST': 'localhost',      # Lascia 'localhost' se il db è sul tuo PC
-        'PORT': '5432',           # La porta di default di Postgres
+        'NAME': 'museo_db',
+        'USER': os.getenv('DB_USER', 'postgres'), # Legge DB_USER, se non c'è usa 'postgres'
+        'PASSWORD': os.getenv('DB_PASSWORD'), # Legge la password
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -106,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'it'
 
 TIME_ZONE = 'UTC'
 
