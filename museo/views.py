@@ -1,5 +1,3 @@
-# museo/views.py
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
@@ -8,7 +6,6 @@ from django.core.paginator import Paginator
 from .models import Tema, Sala, Autore, Opera
 from .forms import OperaForm, AutoreForm
 
-# --- Viste delle Pagine Principali ---
 
 def index(request):
     """
@@ -16,7 +13,6 @@ def index(request):
     """
     return render(request, 'museo/index.html')
 
-# --- Viste delle Liste (Ricerca) ---
 
 def lista_temi(request):
     """
@@ -193,16 +189,16 @@ def lista_opere(request):
     }
     return render(request, 'museo/lista_opere.html', context)
 
-# --- Viste per il CRUD delle Opere ---
+# Viste per il CRUD delle Opere
 
 def opera_gestisci(request, pk=None):
     if pk:
         opera = get_object_or_404(Opera, pk=pk)
-        page_title = "Modifica Opera"      # <-- CORREZIONE 1
+        page_title = "Modifica Opera"
         success_message = "Opera modificata con successo!"
     else:
         opera = None
-        page_title = "Nuova Opera"         # <-- CORREZIONE 1
+        page_title = "Nuova Opera"
         success_message = "Opera creata con successo!"
 
     if request.method == 'POST':

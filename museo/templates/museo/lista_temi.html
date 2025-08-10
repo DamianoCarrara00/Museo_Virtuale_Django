@@ -25,10 +25,6 @@
             <table>
                 <thead>
                     <tr>
-                        {% comment %}
-                        Aggiungiamo una classe 'sortable'. Poi, se questa colonna è quella
-                        attualmente ordinata, aggiungiamo anche 'sort-asc' o 'sort-desc'.
-                        {% endcomment %}
                         <th>
                             <a href="?ordina_per=descrizione&direzione={% if ordina_per == 'descrizione' and direzione == 'asc' %}desc{% else %}asc{% endif %}&descrizione={{ search_descrizione }}"
                             class="sortable {% if ordina_per == 'descrizione' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">

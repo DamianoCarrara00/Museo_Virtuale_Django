@@ -1,4 +1,3 @@
-# museo/forms.py
 from django import forms
 from .models import Opera, Autore
 import datetime
@@ -7,8 +6,6 @@ class OperaForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Rimuoviamo programmaticamente la scelta 'Non specificato' dal form
-        # Lasciandola però disponibile nel modello per la ricerca
         nuove_scelte_tipo = [scelta for scelta in self.fields['tipo'].choices if scelta[0] != 'Non specificato']
         self.fields['tipo'].choices = nuove_scelte_tipo
 
@@ -23,12 +20,11 @@ class OperaForm(forms.ModelForm):
         labels = {
             'annoRealizzazione': "Anno di Realizzazione",
             'annoAcquisto': "Anno di Acquisto",
-            'autore': "Autore", # Modificato da codAutore per coerenza
+            'autore': "Autore",
             'espostaInSala': "Sala Espositiva",
         }
 
     def clean(self):
-        # ... (la funzione clean rimane identica a prima)
         cleaned_data = super().clean()
         anno_realizzazione = cleaned_data.get("annoRealizzazione")
         anno_acquisto = cleaned_data.get("annoAcquisto")
@@ -81,6 +77,7 @@ class AutoreForm(forms.ModelForm):
             if delta_anni > 100:
                 raise forms.ValidationError("Un autore non può vivere più di 100 anni.")
 
+        # Controllo #4: Un autore non può essere vivo da più di 100 anni
         if stato == 'vivo' and data_nascita:
             eta = (oggi - data_nascita).days / 365.25
             if eta > 100:

@@ -1,5 +1,3 @@
-# museo/management/commands/importa_dati.py
-
 import csv
 from django.core.management.base import BaseCommand
 from museo.models import Autore, Tema, Sala, Opera
@@ -17,9 +15,7 @@ class Command(BaseCommand):
 
         try:
             # 1. Importa Temi
-            # Assumiamo che anche gli altri file usino il punto e virgola
             with open('Tema.csv', mode='r', encoding='utf-8') as file:
-                # MODIFICA: Specificato il punto e virgola come separatore
                 reader = csv.DictReader(file, delimiter=';')
                 for row in reader:
                     Tema.objects.create(
@@ -42,7 +38,6 @@ class Command(BaseCommand):
                         dataNascita=data_nascita,
                         dataMorte=data_morte,
                         nazionalita=row['nazione'],
-                        # --- MODIFICA CHIAVE: Leggiamo la colonna 'tipo' e la salviamo nel campo 'stato' ---
                         stato=row['tipo']
                     )
             self.stdout.write(self.style.SUCCESS('Autori importati con successo.'))
@@ -71,8 +66,6 @@ class Command(BaseCommand):
                 reader = csv.DictReader(file, delimiter=';')
                 for row in reader:
                     autore_obj = None
-                    # --- CORREZIONE QUI ---
-                    # Cerca la colonna 'codAutore' invece di 'autore'
                     if row.get('codAutore') and row['codAutore'] != 'NULL':
                         try:
                             autore_obj = Autore.objects.get(codice=row['codAutore'])

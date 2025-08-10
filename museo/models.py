@@ -42,7 +42,6 @@ class Tema(models.Model):
 
 
 class Sala(models.Model):
-    # Qui 'numero' non è la chiave primaria, quindi lo definiamo come campo normale.
     # L'ID automatico di Django sarà la vera chiave primaria.
     numero = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=100)
@@ -76,7 +75,6 @@ class Opera(models.Model):
     annoRealizzazione = models.IntegerField(null=True, blank=True)
     annoAcquisto=models.IntegerField(null=True, blank=True)
     
-    # Il campo 'tipo' che era una stringa (Quadro/Scultura)
     TIPO_CHOICES = [
         ('Quadro', 'Quadro'),
         ('Scultura', 'Scultura'),

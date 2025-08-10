@@ -9,23 +9,18 @@ $(document).ready(function() {
         }
     }
 
-    // ===================================================================
-    // GESTIONE MODALE "NUOVO AUTORE"
-    // ===================================================================
+    // Gestione "Nuovo Autore"
 
-    // Apre il modale
     $('#btn-nuovo-autore').on('click', function() {
         // Pulisce eventuali errori precedenti prima di aprire
         $('#form-nuovo-autore .error-message').text('');
         $('#modal-autore').removeClass('hidden');
     });
 
-    // Chiude il modale con il pulsante "Annulla"
     $('#btn-chiudi-modal').on('click', function() {
         $('#modal-autore').addClass('hidden');
     });
 
-    // Chiude i modali (sia quello autore che quello elimina) con il tasto ESC
     $(document).on('keydown', function(event) {
         if (event.key === "Escape") {
             $('.modal-overlay').addClass('hidden');
@@ -98,7 +93,6 @@ $(document).ready(function() {
         return isFormValido;
     }
 
-    // Agganciamo la validazione agli eventi di modifica dei campi data
     $('#nuova_dataNascita, #nuova_dataMorte').on('change keyup', validaFormAutore);
 
     // --- Chiamata AJAX per salvare il nuovo autore ---
@@ -131,7 +125,6 @@ $(document).ready(function() {
                     $('#message-text').text(`Autore "${nuovoAutore.nome_completo}" aggiunto con successo!`);
                     $('#message-overlay').removeClass('hidden');
                 } else {
-                    // MODIFICA: Mostra un alert più dettagliato con gli errori specifici
                     var error_messages = JSON.parse(response.errors);
                     var alert_text = "Errore di validazione:\n";
                     for (var field in error_messages) {
@@ -147,11 +140,8 @@ $(document).ready(function() {
     });
 
 
-    // ===================================================================
-    // GESTIONE FORM OPERA PRINCIPALE
-    // ===================================================================
-
-    // --- Logica di validazione per gli anni nel form opera ---
+    // Gestione form Opera
+    // Validazione per gli anni
     function validaAnniOpera() {
         var opzioneAutore = $('#id_autore option:selected');
         var annoRealizzazioneInput = $('#id_annoRealizzazione');
@@ -191,15 +181,12 @@ $(document).ready(function() {
         }
     }
 
-    // Agganciamo la validazione agli eventi di modifica dei campi principali
     $('#id_autore, #id_annoRealizzazione, #id_annoAcquisto').on('change keyup', validaAnniOpera);
 
 
-    // ===================================================================
-    // GESTIONE MODALI DI CONFERMA (Eliminazione e Messaggi)
-    // ===================================================================
+    // Gestione Conferme
 
-    // --- Logica per il modale di CONFERMA ELIMINAZIONE ---
+    // Conferma eliminazione
     $('.btn-delete-confirm').on('click', function(e) {
         e.preventDefault();
         var urlElimina = $(this).data('url');
@@ -209,12 +196,10 @@ $(document).ready(function() {
         $('#modal-conferma-elimina').removeClass('hidden');
     });
 
-    // Nasconde il modale di eliminazione se l'utente clicca "Annulla"
     $('#btn-annulla-elimina').on('click', function() {
         $('#modal-conferma-elimina').addClass('hidden');
     });
 
-    // --- Logica di chiusura per il MODALE DEI MESSAGGI ---
     $('#message-close-btn').on('click', function() {
         $('#message-overlay').addClass('hidden');
     });

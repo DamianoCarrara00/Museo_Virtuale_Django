@@ -42,7 +42,6 @@
         <table>
             <thead>
                 <tr>
-                    {# Manteniamo i filtri nei link di ordinamento #}
                     {% with "titolo="|add:search_titolo|add:"&anno="|add:search_anno|add:"&autore_nome="|add:search_autore_nome|add:"&autore_cognome="|add:search_autore_cognome|add:"&tipo="|add:search_tipo|add:"&sala="|add:search_sala as params_ricerca %}
                     <th><a href="?ordina_per=titolo&direzione={% if ordina_per == 'titolo' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'titolo' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Titolo</a></th>
                     <th><a href="?ordina_per=cognome_autore&direzione={% if ordina_per == 'cognome_autore' and direzione == 'asc' %}desc{% else %}asc{% endif %}&{{ params_ricerca }}" class="sortable {% if ordina_per == 'cognome_autore' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">Autore</a></th>
@@ -64,7 +63,6 @@
                         <td>
                             <a href="{% url 'museo:opera_modifica' opera.codice %}" class="btn-link">Modifica</a>
                             
-                            {# MODIFICA QUI: Trasformiamo il link in un pulsante per il JS #}
                             <button type="button" class="btn-link delete btn-delete-confirm" 
                                     data-url="{% url 'museo:opera_elimina' opera.codice %}" 
                                     data-titolo="{{ opera.titolo }}">

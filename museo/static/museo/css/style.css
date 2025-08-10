@@ -136,7 +136,6 @@ footer {
 }
 
 /* --- Stili per l'Ordinamento delle Tabelle --- */
-/* Rende il link un contenitore flessibile e cliccabile in tutta la cella */
 th a {
     display: flex;
     align-items: center; /* Allinea verticalmente testo e freccia */
@@ -154,12 +153,10 @@ th a.sort-desc::after {
     margin-left: 0.5em; /* Aggiunge lo spazio tra il testo e la freccia */
 }
 
-/* Freccia SU (bianca e visibile) */
 th a.sort-asc::after {
     content: '↑';
 }
 
-/* Freccia GIÙ (bianca e visibile) */
 th a.sort-desc::after {
     content: '↓';
 }

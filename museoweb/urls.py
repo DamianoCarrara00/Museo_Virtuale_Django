@@ -21,5 +21,5 @@ from museo import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),  # La homepage
-    path('museo/', include('museo.urls')), # Includi tutti gli URL definiti in museo.urls
+    path('museo/', include('museo.urls')), # Include tutti gli URL definiti in museo.urls
 ]

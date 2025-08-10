@@ -5,13 +5,13 @@ Django settings for museoweb project.
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv  # <-- 1. AGGIUNGI QUESTO IMPORT
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Carica le variabili dal file .env nella directory principale del progetto
-load_dotenv(os.path.join(BASE_DIR, '.env')) # <-- 2. AGGIUNGI QUESTA RIGA
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/

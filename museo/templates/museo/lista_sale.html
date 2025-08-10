@@ -43,7 +43,6 @@
             <table>
                 <thead>
                     <tr>
-                        {# CORREZIONE: Costruiamo i link manualmente per evitare duplicati #}
                         <th>
                             <a href="?ordina_per=numero&direzione={% if ordina_per == 'numero' and direzione == 'asc' %}desc{% else %}asc{% endif %}&numero={{ search_numero }}&nome={{ search_nome }}&tema={{ search_tema }}"
                                class="sortable {% if ordina_per == 'numero' %}{% if direzione == 'asc' %}sort-asc{% else %}sort-desc{% endif %}{% endif %}">

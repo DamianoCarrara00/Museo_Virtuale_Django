@@ -1,4 +1,3 @@
-# museo/urls.py
 from django.urls import path
 from . import views
 
@@ -6,8 +5,6 @@ from . import views
 app_name = 'museo'
 
 urlpatterns = [
-    # Il percorso ora è '' perché il prefisso 'museo/' è già nel file urls.py principale
-    # L'URL completo sarà /museo/temi/
     path('temi/', views.lista_temi, name='lista_temi'),
     path('sale/', views.lista_sale, name='lista_sale'),
     path('autori/', views.lista_autori, name='lista_autori'),
